@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="fixed inset-0 flex items-center justify-center bg-[#001f3f]" id="main-container">
+<div class="fixed inset-0 flex items-center justify-center bg-[#001f3f] overflow-hidden" id="main-container">
     
     <audio id="lagu-cinta" loop>
         <source src="{{ asset('audio/jatuh-cinta.mp3') }}" type="audio/mpeg">
@@ -42,9 +42,8 @@
         tanya.classList.remove('hidden');
     });
 
-    // 2. Logika Klik Tombol Buka (Pemicu Lagu & Animasi)
+    // 2. Logika Klik Tombol Buka
     btn.addEventListener('click', () => {
-        // Memutar lagu segera setelah interaksi klik
         if (audio) {
             audio.play().catch(e => console.log("Izin audio diperlukan browser"));
         }
@@ -57,17 +56,19 @@
         }, 800);
     });
 
-    // 3. Fungsi Animasi Hati (Skala Kecil)
+    // 3. Fungsi Animasi Hati
     function jalankanHati() {
         const container = document.getElementById('container-hati');
-        const teks = "i love you "; 
-        const jumlah = 120; // Jumlah elemen teks
+        const teks = "i love luvv"; // SUDAH DIPERBAIKI (Ditutup tanda kutip)
+        const jumlah = 120; 
 
         for (let i = 0; i < jumlah; i++) {
             const span = document.createElement('span');
             span.innerText = teks;
-            // Tulisan jelas, font tebal
             span.className = 'absolute text-red-600 font-bold text-[14px] pointer-events-none whitespace-nowrap opacity-90 drop-shadow-[0_0_5px_rgba(255,0,0,0.4)]';
+            // Set posisi awal di tengah agar kalkulasi translate benar
+            span.style.left = "50%";
+            span.style.top = "50%";
             container.appendChild(span);
         }
 
@@ -77,17 +78,16 @@
             const time = Date.now() * 0.0015;
 
             spans.forEach((el, i) => {
-                // Rumus Matematika Hati
                 const t = (i / jumlah) * Math.PI * 2;
                 const x = 16 * Math.pow(Math.sin(t), 3);
                 const y = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
 
-                // UKURAN BENTUK HATI: Diperkecil (Mobile: 7, Desktop: 13)
                 const scale = window.innerWidth < 768 ? 7 : 13; 
                 const pulse = 1 + Math.sin(time * 3) * 0.06;
 
+                // Gunakan translate -50% agar titik tengah teks pas di koordinat
                 el.style.transform = `
-                    translate(calc(50vw + ${x * scale * pulse}px), calc(50vh + ${y * scale * pulse}px)) 
+                    translate(calc(-50% + ${x * scale * pulse}px), calc(-50% + ${y * scale * pulse}px)) 
                     rotate(${time * 0.5}rad)
                 `;
             });
